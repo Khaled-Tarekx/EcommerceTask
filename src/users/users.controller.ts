@@ -6,6 +6,12 @@ import { CreateAddressDTO, CreateUserDto } from './dto/index';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get(':userId/orders')
+  async getUserOrders(@Param('userId', ParseIntPipe) userId: number) {
+    return await this.usersService.getUserOrders(userId);
+  }
+
+  
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
@@ -20,10 +26,7 @@ export class UsersController {
     }
   }
 
-  @Get(':userId/orders')
-  async getUserOrders(@Param(':userId', ParseIntPipe) userId: number) {
-    return await this.usersService.getUserOrders(userId);
-  }
+
 }
 
  

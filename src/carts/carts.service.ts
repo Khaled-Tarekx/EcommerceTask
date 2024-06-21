@@ -111,11 +111,11 @@ export class CartsService {
   }
 
   async removeFromCart(data: RemoveFromCartDto) {
-    const { userId, id } = data;
+    const { userId, productId } = data;
 
     const cartItem = await this.prisma.cartItem.findFirst({
       where: {
-        id,
+        productId,
         cart: {
           userId,
         },
@@ -125,6 +125,7 @@ export class CartsService {
     if (!cartItem) {
       throw new NotFoundException('CartItem not found');
     }
+    
     const deletedCartItem = await this.prisma.cartItem.delete({
       where: {
         id: cartItem.id,

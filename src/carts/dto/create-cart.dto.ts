@@ -30,7 +30,7 @@ export class RemoveFromCartDto {
   userId: number;
 
   @IsInt()
-  id: number;
+  productId: number;
 }
 
 export class UpdateCartQuantityDto {
