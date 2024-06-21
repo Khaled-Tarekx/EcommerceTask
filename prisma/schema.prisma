@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  firstName String?
+  lastName  String?
+  role      UserRole  @default(USER)
+  createdAt DateTime  @default(now())
+  orders    Order[]
+  carts     Cart[]
+  addresses Address[]
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String?
+  price         Float
+  discountPrice Float?
+  stock         Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  createdAt   DateTime    @default(now())
+  totalAmount Float?
+  couponId    Int?
+  coupon      Coupon?     @relation(fields: [couponId], references: [id])
+  status      OrderStatus @default(PENDING)
+  user        User        @relation(fields: [userId], references: [id])
+  orderItems  OrderItem[]
+
+  @@index([couponId])
+  @@index([userId])
+}
+
+model Coupon {
+  id     Int     @id @default(autoincrement())
+  code   String
+  amount Float
+  orders Order[]
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  productId Int
+  quantity  Int     @default(1)
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int     @default(1)
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Address {
+  id               Int         @id @default(autoincrement())
+  userId           Int
+  streetAddress    String
+  apartmentAddress String
+  country          String
+  zip              String
+  addressType      AddressType
+  default          Boolean     @default(false)
+  user             User        @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
