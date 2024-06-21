@@ -1,13 +1,11 @@
-import { OrderItem, OrderStatus } from '@prisma/client';
-import { IsEnum, IsInt, IsNumber, IsOptional, Length } from 'class-validator';
+import { OrderStatus } from '@prisma/client';
+import { Type } from 'class-transformer';
+import { IsArray, IsEnum, IsInt, IsNumber, IsOptional, Length, ValidateNested } from 'class-validator';
 
 export class CreateOrderDTO {
     @IsInt()
     userId: number;
 
-    @IsEnum(OrderStatus)
-    status: OrderStatus;
-    
     @IsOptional()
     @IsInt()
     couponId?: number

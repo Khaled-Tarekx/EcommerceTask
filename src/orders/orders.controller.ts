@@ -1,62 +1,87 @@
-import { Controller, Get, Post, Body, Param, BadRequestException, ParseIntPipe, Put } from '@nestjs/common';
-import { OrdersService } from './orders.service';
-import { ApplyCouponDTO, CreateCouponDTO, CreateOrderDTO, CreateOrderItemDTO, UpdateOrderStatusDto } from './dto/index';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  BadRequestException,
+  ParseIntPipe,
+  Put,
+  UsePipes,
+  ValidationPipe,
 
+} from '@nestjs/common';
+import { OrdersService } from './orders.service';
+import {
+  ApplyCouponDTO,
+  CreateCouponDTO,
+  CreateOrderDTO,
+  CreateOrderItemDTO,
+  UpdateOrderStatusDto,
+} from './dto/index';
 
 @Controller('api/orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  createOrder(@Body() createOrderDto: CreateOrderDTO) {
-    try{
-      return this.ordersService.create(createOrderDto);
-    } catch (err) {
-      throw new BadRequestException(err.message)
+  async createOrder(@Body() createOrderDto: CreateOrderDTO) {
+    try {
+    return await this.ordersService.createOrder(
+      createOrderDto,
+    )} catch (err) {
+      throw new BadRequestException(err.message);
     }
+    
   }
   @Post('/item')
-  createOrderItem(@Body() createOrderItemDTO: CreateOrderItemDTO) {
-    try{
-    return this.ordersService.createOrdeItem(createOrderItemDTO);
-  } catch (err) {
-    throw new BadRequestException(err.message)
+  async createOrderItem(@Body() createOrderItemDTO: CreateOrderItemDTO) {
+    try {
+      return await this.ordersService.createOrdeItem(createOrderItemDTO);
+    } catch (err) {
+      throw new BadRequestException(err.message);
     }
   }
   @Post('/coupon')
-  createCoupon(@Body() createCouponDTO: CreateCouponDTO) {
-    try{
-    return this.ordersService.createCoupon(createCouponDTO);
-  } catch (err) {
-    throw new BadRequestException(err.message)
+  async createCoupon(@Body() createCouponDTO: CreateCouponDTO) {
+    try {
+      return await this.ordersService.createCoupon(createCouponDTO);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
-}
 
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get(':orderId')
-  getOrderByID(@Param('orderId', ParseIntPipe) orderId: number) {
-    try{
-    return this.ordersService.getOrderById(orderId);
-  } catch (err) {
-    throw new BadRequestException(err.message)
-  }
+  async getOrderByID(@Param('orderId', ParseIntPipe) orderId: number) {
+    try {
+      return await this.ordersService.getOrderById(orderId);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Put(':orderId/status')
-  updateOrderStatus(@Param('orderId', ParseIntPipe) orderId: number, @Body() updateOrderStatusDto: UpdateOrderStatusDto) {
-    try{
-      return this.ordersService.updateOrderStatus(orderId, updateOrderStatusDto);
+  async updateOrderStatus(
+    @Param('orderId', ParseIntPipe) orderId: number,
+    @Body() updateOrderStatusDto: UpdateOrderStatusDto,
+  ) {
+    try {
+      return await this.ordersService.updateOrderStatus(
+        orderId,
+        updateOrderStatusDto,
+      );
     } catch (err) {
-      throw new BadRequestException(err.message)
+      throw new BadRequestException(err.message);
     }
   }
 
   @Post('apply-coupon')
-  applyCoupon(@Body() applyCoupon: ApplyCouponDTO) {
+  async applyCoupon(@Body() applyCoupon: ApplyCouponDTO) {
     try {
-    return this.ordersService.applyCoupon(applyCoupon);
-  } catch (err) {
-    throw new BadRequestException(err.message)
+      return await this.ordersService.applyCoupon(applyCoupon);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
-  }
-
 }

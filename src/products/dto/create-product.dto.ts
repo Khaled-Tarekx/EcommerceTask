@@ -1,4 +1,4 @@
-import { IsNumber, MinLength } from "class-validator";
+import { IsNumber, IsOptional, MinLength } from "class-validator";
 
 export class CreateProductDto {
         name: string;
@@ -7,6 +7,7 @@ export class CreateProductDto {
         @IsNumber()
         price: number;
         @IsNumber()
+        @IsOptional()
         discountPrice?: number;
         stock: number;
         createdAt: Date;

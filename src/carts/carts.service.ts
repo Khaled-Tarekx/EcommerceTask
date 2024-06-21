@@ -32,6 +32,14 @@ export class CartsService {
       where: { userId },
       include: { cartItems: true },
     })
+
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId}
+    })
+
+    if (!product) {
+      throw new NotFoundException('product not found')
+    }
     if (!cart) {
       // assign a new cart with the user id
       const newCart = await this.prisma.cart.create({
@@ -39,7 +47,7 @@ export class CartsService {
           userId,
           cartItems: {
             create: {
-              productId,
+              productId: product.id,
               quantity,
             },
           },
@@ -47,11 +55,11 @@ export class CartsService {
         include: { cartItems: true },
       })
        // return the first item you find in the list equals to only one item since it just got created
-      return newCart?.cartItems[0]
+      return newCart.cartItems[0]
     }
    
     // check if the product was on the cart the user already
-    const cartItem = cart?.cartItems.find(ele => ele.productId === productId)
+    const cartItem = cart.cartItems.find(ele => ele.productId === productId)
 
     if (cartItem) {
       return this.prisma.cartItem.update({
@@ -59,10 +67,11 @@ export class CartsService {
         data: { quantity: cartItem.quantity + quantity}
       })
     }
+
     return this.prisma.cartItem.create({
       data: {
         cartId: cart.id,
-        productId: productId,
+        productId: product.id,
         quantity: quantity
       }
     })
