@@ -23,58 +23,58 @@ export class CartsController {
   constructor(private readonly cartsService: CartsService) {}
 
   @Post()
-  create(@Body() createCartDto: CreateCartDto) {
+  async create(@Body() createCartDto: CreateCartDto) {
     try {
-      return this.cartsService.create(createCartDto);
+      return await this.cartsService.create(createCartDto);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
   }
 
   @Post('/add')
-  addToCart(@Body() addToCartDto: AddToCartDto) {
+  async addToCart(@Body() addToCartDto: AddToCartDto) {
     try {
-      return this.cartsService.addToCart(addToCartDto);
+      return await this.cartsService.addToCart(addToCartDto);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
   }
 
   @Post('/item')
-  createCartItem(@Body() createCartItemDto: CreateCartItemDto) {
+  async createCartItem(@Body() createCartItemDto: CreateCartItemDto) {
     try {
-      return this.cartsService.createCartItem(createCartItemDto);
+      return await this.cartsService.createCartItem(createCartItemDto);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
   }
 
   @Get(':userId')
-  viewUserCart(
+  async viewUserCart(
     @Param('userId', ParseIntPipe) userId: number,
   ) {
     try {
-      return this.cartsService.viewCart(userId);
+      return await this.cartsService.viewCart(userId);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
   }
 
   @Patch('update')
-  updateCartItemQuantity(
+  async updateCartItemQuantity(
     @Body() updateCartQuantityDto: UpdateCartQuantityDto,
   ) {
     try {
-      return this.cartsService.updateCartItemQuantity(updateCartQuantityDto);
+      return await this.cartsService.updateCartItemQuantity(updateCartQuantityDto);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
   }
 
   @Delete('remove')
-  removeFromCart(@Body() removeFromCartDto: RemoveFromCartDto) {
+  async removeFromCart(@Body() removeFromCartDto: RemoveFromCartDto) {
     try {
-      return this.cartsService.removeFromCart(removeFromCartDto);
+      return await this.cartsService.removeFromCart(removeFromCartDto);
     } catch (err) {
       throw new BadRequestException(err.message);
     }
