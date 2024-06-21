@@ -31,6 +31,8 @@
 ```bash
 $ npm install
 ```
+## url for published postman documentation
+https://documenter.getpostman.com/view/35312527/2sA3XVAL8E
 
 ## Running the app
 
@@ -46,6 +48,8 @@ $ npm run start:prod
 # running prisma
 $ npx prisma studio
 ```
+## url for published postman documentation
+https://documenter.getpostman.com/view/35312527/2sA3XVAL8E
 
 ## Test
 
@@ -59,6 +63,11 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+
+
+
+
 
 ## Support
 
